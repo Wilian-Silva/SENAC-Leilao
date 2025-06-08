@@ -1,12 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author Adm
- */
 
 import java.sql.PreparedStatement;
 import java.sql.Connection;
@@ -57,18 +48,39 @@ public class ProdutosDAO {
    
  
     
-    
-    //public void cadastrarProduto (ProdutosDTO produto){
-        
-        
-        //conn = new conectaDAO().connectDB();
-        
-        
-        
-        
-    //}
-    
     public ArrayList<ProdutosDTO> listarProdutos(){
+        try {
+            
+            conectaDAO conexao = new conectaDAO();
+            conexao.conectar();
+
+            //Armazenamos a query SQL em uma string
+            //String sql = "SELECT id, nome, cpf, endereco, telefone, especialidade, convenioId FROM Medico";
+            String sql = "SELECT * FROM produtos";
+
+            //Preparamos o comando para ser executado no banco
+            PreparedStatement ps = conexao.getConexao().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+           while (rs.next()) {
+                ProdutosDTO p = new ProdutosDTO();
+                p.setId(rs.getInt("id"));
+                p.setNome(rs.getString("nome"));
+                p.setValor(rs.getInt("valor"));
+                p.setStatus(rs.getString("status"));
+ 
+
+                listagem.add(p);
+            }
+
+            conexao.desconectar();
+
+        } catch (SQLException se) {
+            System.err.println("Erro ao listar Produtos: " + se.getMessage());
+        }
+
+        
+        
         
         return listagem;
     }
