@@ -84,6 +84,34 @@ public class ProdutosDAO {
         
         return listagem;
     }
+
+     public static boolean venderProduto(int p) {
+        
+         String sql = "UPDATE produtos SET status = 'Vendido' WHERE id=?";
+
+        // try-with-resources garante o fechamento automático da conexão
+        try (conectaDAO conn = new conectaDAO()) {
+            // Abre a conexão com o banco
+            conn.conectar();
+
+            // Prepara a instrução SQL
+            PreparedStatement ps = conn.getConexao().prepareStatement(sql);
+
+            // Define os valores dos parâmetros com os dados do objeto 'cliente'
+            ps.setInt(1, p);                 
+
+            // Executa a inserção e retorna o número de linhas afetadas
+            int linhasAfetadas = ps.executeUpdate();
+
+            // Retorna true se ao menos uma linha foi inserida
+            return linhasAfetadas > 0;
+
+        } catch (SQLException se) {
+            System.err.println("Erro: " + se);
+            return false;
+        }
+        
+    }
     
     
     
