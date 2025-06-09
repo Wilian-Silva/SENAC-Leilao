@@ -1,7 +1,6 @@
 
 import java.sql.PreparedStatement;
 import java.sql.Connection;
-import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ public class ProdutosDAO {
     Connection conn;
     PreparedStatement prep;
     ResultSet resultset;
-    ArrayList<ProdutosDTO> listagem = new ArrayList<>();
+   
     
     
       public static boolean cadastrarProduto (ProdutosDTO p) {
@@ -49,6 +48,7 @@ public class ProdutosDAO {
  
     
     public ArrayList<ProdutosDTO> listarProdutos(){
+         ArrayList<ProdutosDTO> listagem = new ArrayList<>();
         try {
             
             conectaDAO conexao = new conectaDAO();
@@ -114,7 +114,40 @@ public class ProdutosDAO {
     }
     
     
-    
+    public ArrayList<ProdutosDTO> listarProdutosVendidos(){
+           ArrayList<ProdutosDTO> lista = new ArrayList<>();
+        try {
+            
+            conectaDAO conexao = new conectaDAO();
+            conexao.conectar();
+
+           
+            String sql = "SELECT * FROM produtos where status = 'vendido'";
+
+            //Preparamos o comando para ser executado no banco
+            PreparedStatement ps = conexao.getConexao().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+           while (rs.next()) {
+                ProdutosDTO p = new ProdutosDTO();
+                p.setId(rs.getInt("id"));
+                p.setNome(rs.getString("nome"));
+                p.setValor(rs.getInt("valor"));
+                p.setStatus(rs.getString("status"));
+ 
+
+                lista.add(p);
+            }
+
+            conexao.desconectar();
+
+        } catch (SQLException se) {
+            System.err.println("Erro ao listar Produtos: " + se.getMessage());
+        }
+
+             
         
+        return lista;
+    }
 }
 
